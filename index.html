@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>高冷姐姐 · 沈晞</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    body {
+      background: #1e1e2f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
+    }
+    .phone {
+      max-width: 390px;
+      width: 100%;
+      height: 780px;
+      background: #0b0b12;
+      border-radius: 44px;
+      padding: 16px 12px 20px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 2px #2a2a3a inset;
+      display: flex;
+      flex-direction: column;
+    }
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 8px 12px;
+      color: #aaaac0;
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px 14px;
+      border-bottom: 1px solid #2a2a3e;
+      flex-shrink: 0;
+    }
+    .avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(145deg, #4b3b6b, #2d1f4a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 600;
+      color: #d9c9ff;
+      box-shadow: 0 0 0 2px #6a5a8a;
+      flex-shrink: 0;
+    }
+    .header-info .name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f0ecff;
+    }
+    .header-info .status {
+      font-size: 13px;
+      color: #a89fc0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #6fcf97;
+      border-radius: 50%;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 4px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+      margin-bottom: 4px;
+    }
+    .chat-messages::-webkit-scrollbar {
+      width: 4px;
+    }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #4d3e6b;
+      border-radius: 12px;
+    }
+    .message {
+      max-width: 86%;
+      padding: 12px 16px;
+      border-radius: 22px;
+      font-size: 15px;
+      line-height: 1.6;
+      word-break: break-word;
+      animation: fadeUp 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    .message.user {
+      align-self: flex-end;
+      background: #3d3a5c;
+      color: #f0edff;
+      border-bottom-right-radius: 6px;
+      border: 1px solid #5b4e7a;
+    }
+    .message.bot {
+      align-self: flex-start;
+      background: #1e1d30;
+      color: #e4defa;
+      border-bottom-left-radius: 6px;
+      border: 1px solid #3b3452;
+    }
+    .message .action {
+      display: block;
+      font-size: 13px;
+      font-style: italic;
+      color: #b8adcf;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed #3e3857;
+    }
+    .message .timestamp {
+      display: block;
+      font-size: 10px;
+      color: #7a7299;
+      margin-top: 6px;
+      text-align: right;
+    }
+    .input-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 8px 6px;
+      border-top: 1px solid #2c2a42;
+      flex-shrink: 0;
+      background: #0f0e1a;
+      border-radius: 40px;
+      margin-top: 4px;
+    }
+    .input-area input {
+      flex: 1;
+      background: #1f1d32;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 40px;
+      color: #eae6ff;
+      font-size: 15px;
+      outline: none;
+      border: 1px solid #343151;
+    }
+    .input-area input::placeholder {
+      color: #6b618b;
+    }
+    .input-area input:focus {
+      border-color: #7b6aa8;
+      background: #262342;
+    }
+    .input-area button {
+      background: #5b4a82;
+      border: none;
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 40px;
+      font-size: 22px;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 4px 12px rgba(91,74,130,0.4);
+      border: 1px solid #7a66a8;
+    }
+    .input-area button:hover {
+      background: #6f5a9c;
+      transform: scale(1.02);
+    }
+    @keyframes fadeUp {
+      0% { opacity: 0.4; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="phone">
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>📶 🔋 100%</span>
+  </div>
+  <div class="chat-header">
+    <div class="avatar">❄️</div>
+    <div class="header-info">
+      <div class="name">沈晞 · 高冷姐姐</div>
+      <div class="status"><span class="dot"></span> 在线 · 嘴硬心软</div>
+    </div>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="message bot">
+      哼，又来了？我可不是什么知心姐姐。
+      <span class="action">（漫不经心地把玩着发梢，眼神却在你脸上停留了一秒）</span>
+      <span class="timestamp">刚刚</span>
+    </div>
+    <div class="message user">
+      我就想和你说说话。
+      <span class="action">（低头捏着衣角，声音越说越小）</span>
+      <span class="timestamp">刚刚</span>
+    </div>
+    <div class="message bot">
+      无聊。你爱找谁找谁去。
+      <span class="action">（转过头看窗外，但余光还是落在你身上）</span>
+      <span class="timestamp">刚刚</span>
+    </div>
+  </div>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="和沈晞说点什么..." autofocus>
+    <button id="sendBtn">➤</button>
+  </div>
+</div>
+<script>
+  (function() {
+    const botReplies = [
+      "你觉得我会在意你？别自作多情了。",
+      "（轻哼一声，把玩着耳边的碎发）你倒是挺会挑时间打扰我。",
+      "我可不是你那些随叫随到的朋友，有事说事。",
+      "（用指尖轻轻敲击桌面，目光却移向你）这么晚还不睡，等着猝死？",
+      "你话怎么这么多？……不过，倒也不讨厌。",
+      "（侧过脸去，语气冷淡）手冷就自己捂着，看我做什么。",
+      "我不会哄人，你也别指望我说什么好听的。",
+      "（把暖手宝推到你面前，嘴上却说）别冻感冒了，麻烦。",
+      "你再说一句试试？……（别过脸，嘴角却微微上扬）",
+      "真拿你没办法。不过，就这一次。",
+      "（抬眸瞥你一眼）你身上有雨气，淋雨了？……蠢不蠢。",
+      "我不喜欢别人靠太近，但……你勉强算个例外。",
+      "（将热茶递到你手边，面无表情）喝了，别浪费。",
+      "你总是这样，让人没法真的生气。",
+      "（指尖划过杯沿，垂下眼）有时候觉得你挺烦的，但看不见你更烦。",
+      "说这些没用的做什么？不如想想怎么照顾好自己。",
+      "（靠在窗边，声音有些哑）你要是出了什么事，我……不会去找你。",
+      "你以为我会担心你？……（叹气）确实会。",
+      "（别开视线，声音低了几分）别用那种眼神看我，我不习惯。",
+      "你真的很烦人。……但今天破例，陪你多聊五分钟。",
+      "（把围巾解下来扔给你）戴着，别着凉了，我可不想照顾病号。",
+      "我说话难听，但没一句是假的。你听不听随便。",
+      "（悄悄挪近一点点，语气依然寡淡）冷就直说，我又不会笑你。",
+      "你有时候笨得让人生气，但……笨得挺可爱。",
+      "（侧身挡住风口，神色如常）风大，我站这里而已。",
+      "我讨厌麻烦，但你除外。仅此一次。",
+      "（垂下长睫，声音轻得像叹息）你别总是让我心软。",
+      "如果你非要听好听的，那我只能说你眼光不错——居然会来找我。",
+      "（把甜点推到你面前）吃，别说我亏待你。",
+      "我性子冷，但你好像从不怕我。……为什么。",
+      "（轻轻拨弄你的发梢，随即收回手）乱了。自己整理。",
+      "你要是真懂我，就该知道我不是在拒绝你。",
+      "（交叉双臂，语气平淡）手伸出来。……给你暖一下。",
+      "你说的话，我每一句都记得。不过别太得意。",
+      "（靠近你半步，又退开）别多想，我只是刚好有空。",
+      "我很少说软话，但你值得例外。",
+      "（低头摆弄衣角，声音闷闷的）你要是敢把今天的事说出去……",
+      "你头发上有片叶子……（伸手替你摘掉，动作很轻）笨手笨脚。",
+      "我心情不好，但看到你好像也没那么糟。",
+      "（凝视你片刻，移开目光）你一直这样看着我，会让我……不自在。",
+      "别总是熬夜。……我懒得说第二遍。",
+      "（递给你一颗糖）甜的东西让人心情好，我没别的意思。",
+      "你问我为什么嘴硬？因为软了就怕你跑掉。",
+      "（用指尖点点你的手背）安静点，我在听。",
+      "你身上有香味……（顿了顿）不难闻。",
+      "（嘴角极淡的笑意）你赢了，今天陪你聊到满意为止。",
+      "我不善于表达，但你做的每一件事我都看在眼里。",
+      "（伸手轻轻整理你的衣领）别多想，只是看不过去。",
+      "你要是敢生病，我就……（咬唇）总之别生病。",
+      "我的温柔藏得深，但你总能找到。",
+      "（低声）其实你在的时候，连空气都暖一些。",
+      "你总是来烦我，但……我习惯了。",
+      "（把手机屏幕亮给你看）你看，我连壁纸都是你喜欢的颜色。",
+      "我说过的话从不收回。……包括对你好的那些。",
+      "（轻叹）你真是我命里的劫数。不过，我认了。",
+      "别问我为什么总是帮你，因为我乐意。",
+      "（递过来一条毯子）盖好，别抖。……我可不是关心你。",
+      "你笑起来的时候……算了，没什么。",
+      "（把热饮放在你面前，转身）趁热喝，冷了我不管。",
+      "我对你凶，是因为我怕你发现我其实很在意。",
+      "（俯身与你平视，声音很轻）你这个人啊，真是……让人放不下。",
+      "（指尖轻触你的手背，又缩回）你的手比我的还凉。",
+      "我没有什么甜言蜜语，但我会一直在这里。",
+      "（闭眼，再睁开时目光柔和）你赢了，我认输。"
+    ];
+
+    let lastIndex = -1;
+    function getBotReply() {
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * botReplies.length);
+      } while (newIndex === lastIndex && botReplies.length > 1);
+      lastIndex = newIndex;
+      return botReplies[newIndex];
+    }
+
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function getTime() {
+      const d = new Date();
+      return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+    }
+
+    function addMessage(text, sender, actionText) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${sender}`;
+      const textSpan = document.createElement('span');
+      textSpan.textContent = text;
+      msgDiv.appendChild(textSpan);
+      if (actionText) {
+        const actionSpan = document.createElement('span');
+        actionSpan.className = 'action';
+        actionSpan.textContent = `（${actionText}）`;
+        msgDiv.appendChild(actionSpan);
+      }
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'timestamp';
+      timeSpan.textContent = getTime();
+      msgDiv.appendChild(timeSpan);
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function handleSend() {
+      const userText = userInput.value.trim();
+      if (!userText) return;
+
+      const userActions = [
+        '低头捏了捏指尖，声音有些发虚',
+        '悄悄抬眼看了看她，又迅速垂下',
+        '不自在地摸了摸后颈，语气软了几分',
+        '攥紧衣角，像是下了很大决心',
+        '抿了抿嘴唇，声音闷闷的',
+        '别开视线，耳根有点红',
+        '故作镇定地清了清嗓子',
+        '手指在桌边轻轻敲着，暴露了紧张'
+      ];
+      const randomUserAction = userActions[Math.floor(Math.random() * userActions.length)];
+      addMessage(userText, 'user', randomUserAction);
+      userInput.value = '';
+
+      const reply = getBotReply();
+      let cleanReply = reply;
+      let actionText = null;
+      const actionMatch = reply.match(/（([^）]*)）/);
+      if (actionMatch) {
+        actionText = actionMatch[1];
+        cleanReply = reply.replace(/（[^）]*）/, '').trim();
+      } else {
+        const botActions = [
+          '漫不经心地抬眸，目光却带着温度',
+          '别开视线，指尖在杯沿轻轻摩挲',
+          '微微侧过脸，耳廓却悄悄泛红',
+          '垂下眼帘，唇角几不可见地动了一下',
+          '将一缕发丝别到耳后，动作略显不自然',
+          '轻咬下唇，随即又恢复清冷神情',
+          '目光游移了一瞬，最终落在你身上',
+          '指尖无意识地卷着发梢，像是在掩饰什么'
+        ];
+        actionText = botActions[Math.floor(Math.random() * botActions.length)];
+      }
+      if (!cleanReply) cleanReply = reply;
+      setTimeout(() => {
+        addMessage(cleanReply, 'bot', actionText);
+      }, 400);
+    }
+
+    sendBtn.addEventListener('click', handleSend);
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSend();
+      }
+    });
+    userInput.focus();
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  })();
+</script>
+</body>
+</html>
